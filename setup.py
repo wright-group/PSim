@@ -7,6 +7,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 extra_files = []
 extra_files.append(os.path.join(here, 'LICENSE'))
+extra_files.append(os.path.join(here, 'VERSION'))
 
 with open(os.path.join(here, 'requirements.txt')) as f:
     required = f.read().splitlines()

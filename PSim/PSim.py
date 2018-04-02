@@ -12,7 +12,7 @@ Created on Mon Mar 09 10:07:36 2015
 
 import numpy as np
 
-from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool as Pool
 
 
 # --- define -------------------------------------------------------------------------------------
