@@ -5,9 +5,24 @@ Created on Mon Mar 09 10:07:36 2015
 
 @author: Matthew Rowley
 """
-from __future__ import division
+
+
+# --- import -------------------------------------------------------------------------------------
+
+
 import numpy as np
+
 from multiprocessing import Pool
+
+
+# --- define -------------------------------------------------------------------------------------
+
+
+__all__ = ['DecaySim']
+
+
+# --- workspace ----------------------------------------------------------------------------------
+
 
 # Some universal constants
 ps = 10.0**-12

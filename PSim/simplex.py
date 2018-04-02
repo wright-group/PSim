@@ -276,9 +276,9 @@ def main():
     s = Simplex(my_objective_function, [1, 1, 1], [.01, .01, .01])
     values, err, iter = s.minimize(epsilon = 0.0000001, maxiters = 250, monitor = 1, static_par=[2,4])
     del(s)
-    print 'args = ', values
-    print 'error = ', err
-    print 'iterations = ', iter
+    print('args = ', values)
+    print('error = ', err)
+    print('iterations = ', iter)
 
 if __name__ == '__main__':
     main()

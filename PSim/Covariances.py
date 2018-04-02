@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 import numpy as np
-import PSim
+from . import PSim
 import pickle
 import csv
-import simplex
+from . import simplex
 
 fit_type = 'global'
 scale = 0.003
