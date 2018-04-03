@@ -205,7 +205,7 @@ class DecaySim():
     """
     def __init__(self, trap=2.5*10**16, Keq=1.0*10**17,
                  EHdecay=1.0*10**-10, Etrap=2.0*10**-10, FHloss=8.0*10**-12,
-                 G3decay = 0, step=200*ps, pretime=2, reprate=10000000,
+                 G3decay = 0, step=200*ps, pretime=2, reprate=80000000,
                  verbose=False, trackQ=False, scalar=1, Gdecay=0, GHdecay=0,
                  tolerance=0.005, G2decay=0. ,Gescape=1., Gform=1., G3loss=0.):
         """
