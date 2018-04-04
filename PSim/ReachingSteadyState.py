@@ -7,16 +7,19 @@ Created on Mon Apr  2 20:22:39 2018
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.rcParams['font.size'] = 20 
+
 
 ################################## Functions ##################################
 def Gauss(t, a, t0, sigma):
     return a * np.exp(-(t - t0)**2 / (2 * sigma**2))
 
-def bEqn(g, e, h, pulse, stepsize, Gdecay=200, G2decay=7.4e-12, G3decay=1.4e-35, GHdecay=4.4e-12, Gescape=2.44e7, G3loss=1.08e-30, Gform=0):
+def bEqn(g, e, h, pulse, stepsize, cwrate=10000000, Gdecay=200, G2decay=7.4e-12, G3decay=1.4e-35, GHdecay=4.4e-12, Gescape=2.44e7, G3loss=1.08e-30, Gform=0):
     '''
     High concentration gem_pair master rate equation
     '''
     Gchange = (pulse
+               + cwrate
                - g * Gdecay
                - g * g * G2decay
                - g * g * g * G3decay
@@ -112,10 +115,11 @@ trap = 2.52e18 #cm^-3
 
 reprate = 80*MHz
 spacing = 1.00/reprate
-N = 1000 #number of points in array corresponding to one cycle
+N = 5000 #number of points in array corresponding to one cycle
 numcycles = 20
 duration = spacing*numcycles
 stepsize = spacing/N
+cwrate = 100e28 #carriers created per cm^3 per s
 
 #Time and population arrays
 time = np.arange(0,duration,stepsize)
@@ -144,7 +148,7 @@ pulseTrain = np.tile(spulse,numcycles)
 
 ############################ Numerical Integration ############################
 for i in np.arange(1,numcycles*N):
-    gs[i] = gs[i-1] + bEqn(gs[i-1], es[i-1], hos[i-1], spulse[i%N], stepsize)
+    gs[i] = gs[i-1] + bEqn(gs[i-1], es[i-1], hos[i-1], spulse[i%N], stepsize, cwrate)
     es[i] = es[i-1] + eEqn(gs[i-1], es[i-1], hos[i-1], fts[i-1], trap, stepsize)
     hos[i] = hos[i-1] + hEqn(gs[i-1], es[i-1], hos[i-1], fts[i-1], stepsize)
     fts[i] = fts[i-1] + fEqn(es[i-1], hos[i-1], fts[i-1], trap, stepsize)
@@ -152,24 +156,35 @@ for i in np.arange(1,numcycles*N):
     ehsigs[i] = ehsignalEqn(es[i], hos[i])
 
 ############################ Plotting #########################################
-
 timens = time*1e9
-plt.figure()
-plt.subplot(311)
-plt.plot(timens, pulseTrain, label='pulse')
-plt.ylabel('Pulse Intensity (Carriers/s)')
-plt.subplot(312)
-plt.plot(timens, gs, label = 'G')
-plt.plot(timens, es, label = 'E')
-plt.plot(timens, hos, label = 'H')
-plt.plot(timens, fts, label = 'F')
-plt.ylabel('Population')
-plt.yscale('log')
-plt.legend()
-plt.subplot(313)
-plt.plot(timens, gsigs+ehsigs, label = 'Signal')
+
+#an unnecessarily fancy way to generate labels
+if cwrate == 0:
+    cwlabel = 'no CW'
+else:
+    expform = '{0:0.4e}'.format(cwrate)
+    split = expform.split('e')
+    nvalue = float(split[0])
+    pow10 = int(split[1])
+    cwlabel = '%0.2d'%nvalue + r'$\times 10^{' + str(pow10) + r'} \  cm^{-3} \ s^{-1}$'
+
+#plt.subplot(311)
+#plt.plot(timens, pulseTrain, label='pulse')
+#plt.ylabel('Pulse Intensity (Carriers/s)')
+#plt.subplot(211)
+#plt.plot(timens, gs, label = 'G')
+#plt.plot(timens, es, label = 'E')
+#plt.plot(timens, hos, label = 'H')
+#plt.plot(timens, fts, label = 'F')
+#plt.ylabel('Population')
+#plt.yscale('log')
+#plt.legend()
+#plt.subplot(212)
+plt.plot(timens, gsigs+ehsigs, label = cwlabel)
 plt.ylabel('PL Signal')
-plt.yscale('log')
+#plt.xlim(1,117.5)
+#plt.yscale('log')
+#plt.ylim(2e27,)
 plt.legend()
 plt.xlabel('Time (ns)')
 plt.show()
