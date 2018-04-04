@@ -101,7 +101,7 @@ MHz = 1e6
 kHz = 1e3
 nm = 1e-9
 c = 2.9979e8
-h = 6.626e-34
+hPlanck = 6.626e-34
 
 #Initial Parameters 
 g = 0
@@ -113,7 +113,7 @@ trap = 2.52e18 #cm^-3
 reprate = 80*MHz
 spacing = 1.00/reprate
 N = 1000 #number of points in array corresponding to one cycle
-numcycles = 100
+numcycles = 20
 duration = spacing*numcycles
 stepsize = spacing/N
 
@@ -127,8 +127,8 @@ gsigs = np.zeros(len(time))
 ehsigs = np.zeros(len(time))
 
 
-def pulse(t, power=0.008, wavelength=639, reprate=80*MHz, fwhm=50*ps):
-    photonEnergy = h*c/wavelength
+def pulse(t, power=0.008*1e10, wavelength=400*nm, reprate=80*MHz, fwhm=100*fs):
+    photonEnergy = hPlanck*c/wavelength
     pulseEnergy = power/reprate
     pulseCarriers = pulseEnergy/photonEnergy
     spacing = 1.00/reprate
@@ -164,10 +164,12 @@ plt.plot(timens, es, label = 'E')
 plt.plot(timens, hos, label = 'H')
 plt.plot(timens, fts, label = 'F')
 plt.ylabel('Population')
+plt.yscale('log')
 plt.legend()
 plt.subplot(313)
 plt.plot(timens, gsigs+ehsigs, label = 'Signal')
 plt.ylabel('PL Signal')
+plt.yscale('log')
 plt.legend()
 plt.xlabel('Time (ns)')
 plt.show()
